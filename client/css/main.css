@@ -1,0 +1,499 @@
+/**
+ * Pinch-to-Zoom 텍스트 요약 메인 스타일시트
+ * 반응형 디자인과 모바일 최적화를 고려한 스타일
+ */
+
+/* ============================================================
+   전역 스타일
+   ============================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* 색상 팔레트 */
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --accent-color: #e74c3c;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --background-color: #ecf0f1;
+    --text-color: #2c3e50;
+    --border-color: #bdc3c7;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+
+    /* 타이포그래피 */
+    --font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+    --font-size-base: 16px;
+    --font-size-small: 14px;
+    --font-size-large: 18px;
+    --line-height: 1.8;
+
+    /* 간격 */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    /* 레이아웃 */
+    --max-width: 900px;
+    --border-radius: 8px;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height);
+    color: var(--text-color);
+    background-color: var(--background-color);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   앱 컨테이너
+   ============================================================ */
+
+.app-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    background-color: white;
+    box-shadow: 0 0 20px var(--shadow-color);
+    overflow: hidden; /* 컨테이너 스크롤 방지 */
+}
+
+/* ============================================================
+   헤더
+   ============================================================ */
+
+.app-header {
+    flex-shrink: 0; /* 헤더 크기 고정 */
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: var(--spacing-lg);
+    text-align: center;
+    box-shadow: 0 2px 10px var(--shadow-color);
+}
+
+.app-header h1 {
+    font-size: 28px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.app-header .subtitle {
+    font-size: var(--font-size-small);
+    opacity: 0.9;
+}
+
+/* ============================================================
+   컨트롤 패널
+   ============================================================ */
+
+.control-panel {
+    flex-shrink: 0; /* 컨트롤 패널 크기 고정 */
+    background-color: #f8f9fa;
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* 레벨 인디케이터 */
+.level-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    font-weight: 500;
+}
+
+.level-value {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-large);
+    min-width: 40px;
+    text-align: center;
+}
+
+.level-description {
+    color: var(--secondary-color);
+    font-style: italic;
+}
+
+/* 버튼 컨트롤 */
+.button-controls {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.control-button {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background-color: white;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    color: var(--primary-color);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.control-button:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.control-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.control-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.button-icon {
+    font-size: 20px;
+}
+
+/* 레벨 슬라이더 */
+.level-slider {
+    margin-top: var(--spacing-md);
+}
+
+#level-range {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right,
+        var(--success-color) 0%,
+        var(--primary-color) 50%,
+        var(--warning-color) 100%);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+#level-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--primary-color);
+    cursor: pointer;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+#level-range::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--primary-color);
+    cursor: pointer;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--spacing-sm);
+    font-size: var(--font-size-small);
+    color: var(--secondary-color);
+}
+
+/* ============================================================
+   텍스트 표시 영역
+   ============================================================ */
+
+.text-container {
+    flex: 1; /* 남은 공간 모두 차지 */
+    overflow-y: auto; /* 스크롤 가능 */
+    overflow-x: hidden;
+    padding: var(--spacing-xl);
+    background-color: white;
+    touch-action: pan-y pinch-zoom;
+}
+
+.text-content {
+    max-width: 100%;
+    font-size: var(--font-size-base);
+    line-height: var(--line-height);
+    color: var(--text-color);
+    user-select: text;
+}
+
+.text-content p {
+    margin-bottom: var(--spacing-lg);
+    text-align: justify;
+}
+
+.text-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* 단어 스타일 */
+.word {
+    display: inline-block;  /* inline-block으로 변경하여 padding/background 적용 */
+    padding: 2px 4px;       /* 배경색이 잘 보이도록 패딩 추가 */
+    margin: 0 2px;          /* 단어 간 간격 */
+    border-radius: 3px;     /* 부드러운 모서리 */
+    transition: all 0.2s ease;
+}
+
+/* ============================================================
+   통계 패널
+   ============================================================ */
+
+.stats-panel {
+    flex-shrink: 0; /* 통계 패널 크기 고정 */
+    display: flex;
+    justify-content: space-around;
+    padding: var(--spacing-md);
+    background-color: #f8f9fa;
+    border-top: 1px solid var(--border-color);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.stat-label {
+    font-size: var(--font-size-small);
+    color: #7f8c8d;
+}
+
+.stat-value {
+    font-size: var(--font-size-large);
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* ============================================================
+   로딩 오버레이
+   ============================================================ */
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-text {
+    margin-top: var(--spacing-md);
+    color: white;
+    font-size: var(--font-size-large);
+}
+
+/* ============================================================
+   메시지 (에러 & 성공)
+   ============================================================ */
+
+.error-message,
+.success-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 500px;
+    width: 90%;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    z-index: 999;
+    display: none;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.error-message.active,
+.success-message.active {
+    display: block;
+}
+
+.error-message {
+    background-color: #fee;
+    border-left: 4px solid var(--accent-color);
+}
+
+.success-message {
+    background-color: #efe;
+    border-left: 4px solid var(--success-color);
+}
+
+.error-content,
+.success-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.error-icon,
+.success-icon {
+    font-size: 24px;
+}
+
+.error-text,
+.success-text {
+    flex: 1;
+    color: var(--text-color);
+}
+
+.error-close {
+    padding: var(--spacing-xs) var(--spacing-md);
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+/* ============================================================
+   터치 인디케이터 (모바일)
+   ============================================================ */
+
+.touch-indicator {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    text-align: center;
+    z-index: 500;
+    animation: fadeInOut 3s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+.gesture-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+    font-size: 24px;
+}
+
+/* ============================================================
+   푸터
+   ============================================================ */
+
+.app-footer {
+    flex-shrink: 0; /* 푸터 크기 고정 */
+    background-color: var(--secondary-color);
+    color: white;
+    text-align: center;
+    padding: var(--spacing-md);
+    font-size: var(--font-size-small);
+}
+
+/* ============================================================
+   반응형 디자인
+   ============================================================ */
+
+/* 모바일 (< 768px) */
+@media (max-width: 767px) {
+    .app-header h1 {
+        font-size: 22px;
+    }
+
+    .text-container {
+        padding: var(--spacing-md);
+    }
+
+    .button-controls {
+        flex-direction: column;
+    }
+
+    .control-button {
+        width: 100%;
+    }
+
+    .stats-panel {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    .touch-indicator {
+        display: block;
+    }
+}
+
+/* 태블릿 (768px ~ 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .text-container {
+        padding: var(--spacing-lg);
+    }
+}
+
+/* 데스크톱 (> 1024px) */
+@media (min-width: 1025px) {
+    .text-content {
+        font-size: var(--font-size-large);
+    }
+}

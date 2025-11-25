@@ -1,0 +1,363 @@
+/**
+ * 애니메이션 스타일시트
+ * GPU 가속을 활용한 부드러운 단어 전환 애니메이션
+ */
+
+/* ============================================================
+   GPU 가속 설정
+   ============================================================ */
+
+.word-transition {
+    will-change: opacity, transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* ============================================================
+   페이드아웃 애니메이션
+   ============================================================ */
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        transform: translateZ(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateZ(0) scale(0.95);
+    }
+}
+
+.word-fadeout {
+    animation: fadeOut 300ms ease-out forwards;
+    will-change: opacity, transform;
+}
+
+/* ============================================================
+   페이드인 애니메이션
+   ============================================================ */
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateZ(0) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateZ(0) scale(1);
+    }
+}
+
+.word-fadein {
+    animation: fadeIn 300ms ease-in forwards;
+    will-change: opacity, transform;
+}
+
+/* ============================================================
+   변형(Morph) 애니메이션
+   ============================================================ */
+
+@keyframes morph {
+    0% {
+        opacity: 1;
+        color: inherit;
+    }
+    50% {
+        opacity: 0.3;
+        color: #3498db;
+        transform: translateZ(0) scale(0.98);
+    }
+    100% {
+        opacity: 1;
+        color: inherit;
+        transform: translateZ(0) scale(1);
+    }
+}
+
+.word-morph {
+    animation: morph 400ms ease-in-out forwards;
+    will-change: opacity, color, transform;
+}
+
+/* ============================================================
+   하이라이트 애니메이션
+   ============================================================ */
+
+@keyframes highlight {
+    0%, 100% {
+        background-color: transparent;
+    }
+    50% {
+        background-color: rgba(52, 152, 219, 0.2);
+    }
+}
+
+.word-highlight {
+    animation: highlight 600ms ease-in-out;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+/* ============================================================
+   우선순위 그룹별 지연 시간
+   ============================================================ */
+
+/* 즉시 제거 그룹 (우선순위 낮음) */
+.priority-immediate {
+    animation-delay: 0ms;
+}
+
+/* 중간 제거 그룹 */
+.priority-middle {
+    animation-delay: 100ms;
+}
+
+/* 후반 제거 그룹 (우선순위 높음) */
+.priority-late {
+    animation-delay: 200ms;
+}
+
+/* ============================================================
+   Ease 곡선 정의
+   ============================================================ */
+
+.ease-out-quad {
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.ease-in-quad {
+    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+
+.ease-in-out-quad {
+    animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+/* ============================================================
+   레벨 전환 애니메이션
+   ============================================================ */
+
+@keyframes levelTransition {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    50% {
+        opacity: 0.7;
+        transform: translateY(-5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.level-transition {
+    animation: levelTransition 500ms ease-in-out;
+}
+
+/* ============================================================
+   텍스트 컨테이너 전환
+   ============================================================ */
+
+@keyframes containerFade {
+    0% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.container-transition {
+    animation: containerFade 300ms ease-out;
+}
+
+/* ============================================================
+   순차적 애니메이션 (Stagger)
+   ============================================================ */
+
+/* 그룹 내 단어별 20ms 간격 */
+.word-stagger-1 { animation-delay: 0ms; }
+.word-stagger-2 { animation-delay: 20ms; }
+.word-stagger-3 { animation-delay: 40ms; }
+.word-stagger-4 { animation-delay: 60ms; }
+.word-stagger-5 { animation-delay: 80ms; }
+.word-stagger-6 { animation-delay: 100ms; }
+.word-stagger-7 { animation-delay: 120ms; }
+.word-stagger-8 { animation-delay: 140ms; }
+.word-stagger-9 { animation-delay: 160ms; }
+.word-stagger-10 { animation-delay: 180ms; }
+
+/* ============================================================
+   문단 전환 애니메이션
+   ============================================================ */
+
+@keyframes paragraphSlide {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.paragraph-enter {
+    animation: paragraphSlide 400ms ease-out;
+}
+
+/* ============================================================
+   로딩 애니메이션
+   ============================================================ */
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(0.95);
+    }
+}
+
+.loading-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ============================================================
+   스켈레톤 로딩 애니메이션
+   ============================================================ */
+
+@keyframes skeleton {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+.skeleton-text {
+    display: inline-block;
+    height: 1em;
+    background: linear-gradient(
+        90deg,
+        #f0f0f0 0px,
+        #e0e0e0 40px,
+        #f0f0f0 80px
+    );
+    background-size: 200px 100%;
+    animation: skeleton 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+/* ============================================================
+   버튼 애니메이션
+   ============================================================ */
+
+@keyframes buttonPress {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.button-press {
+    animation: buttonPress 200ms ease-out;
+}
+
+/* ============================================================
+   토스트 메시지 애니메이션
+   ============================================================ */
+
+@keyframes toastSlideIn {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+@keyframes toastSlideOut {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+}
+
+.toast-enter {
+    animation: toastSlideIn 300ms ease-out;
+}
+
+.toast-exit {
+    animation: toastSlideOut 300ms ease-in;
+}
+
+/* ============================================================
+   성능 최적화
+   ============================================================ */
+
+/* 애니메이션이 끝난 후 will-change 제거 */
+.animation-complete {
+    will-change: auto;
+}
+
+/* 애니메이션 중단 (성능 저하 시) */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 저성능 디바이스 감지 (간접적) */
+@media (max-width: 767px) and (max-resolution: 1dppx) {
+    .word-transition {
+        will-change: opacity;
+    }
+
+    .word-fadeout,
+    .word-fadein {
+        animation-duration: 200ms;
+    }
+}
+
+/* ============================================================
+   디버그 모드 (개발용)
+   ============================================================ */
+
+.debug-animation {
+    outline: 2px dashed red;
+    animation-duration: 3s !important;
+}
+
+.debug-priority-immediate {
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+.debug-priority-middle {
+    background-color: rgba(255, 165, 0, 0.1);
+}
+
+.debug-priority-late {
+    background-color: rgba(0, 255, 0, 0.1);
+}

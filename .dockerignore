@@ -1,0 +1,38 @@
+# Node modules
+node_modules
+npm-debug.log
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# 문서
+README.md
+docs/
+specs/
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# 환경 변수
+.env
+.env.local
+.env.*.local
+
+# 클라이언트 파일 (Nginx에서 제공)
+client/
+
+# 로그
+*.log
+
+# 임시 파일
+*.tmp
+.DS_Store

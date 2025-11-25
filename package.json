@@ -1,0 +1,29 @@
+{
+  "name": "pinch-to-zoom-summarizer",
+  "version": "1.0.0",
+  "description": "핀치 투 줌 제스처 기반 다단계 텍스트 요약 시스템",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js"
+  },
+  "keywords": [
+    "text-summarization",
+    "pinch-zoom",
+    "azure-openai",
+    "tfidf"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "openai": "^4.77.3",
+    "express": "^4.18.2",
+    "natural": "^6.10.0",
+    "node-cache": "^5.1.2",
+    "dotenv": "^16.3.1",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

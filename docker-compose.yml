@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # Nginx 리버스 프록시 및 정적 파일 서버
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: pinch-zoom-nginx
+    ports:
+      - "18281:80"
+    volumes:
+      - ./client:/usr/share/nginx/html:ro
+    depends_on:
+      - app
+    networks:
+      - pinch-zoom-network
+    restart: unless-stopped
+
+  # Node.js 애플리케이션 서버
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pinch-zoom-app
+    environment:
+      - NODE_ENV=production
+      - PORT=3135
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY}
+      - ENDPOINT_URL=${ENDPOINT_URL}
+      - DEPLOYMENT_NAME=${DEPLOYMENT_NAME}
+    volumes:
+      - ./example.txt:/app/example.txt:ro
+    expose:
+      - "3135"
+    networks:
+      - pinch-zoom-network
+    restart: unless-stopped
+
+networks:
+  pinch-zoom-network:
+    driver: bridge
