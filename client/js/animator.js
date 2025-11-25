@@ -57,20 +57,7 @@
 
         // 애니메이션 효과 강도
         effects: {
-            // 추가 효과 (초록색 blink)
-            add: {
-                color: '#51cf66',      // 초록색
-                backgroundColor: '#d3f9d8',  // 밝은 초록 배경
-                scale: 1.15,
-                fontWeight: 'bold'
-            },
-            // 유지 효과 (노란색 blink)
-            keep: {
-                color: '#fab005',      // 노란색
-                backgroundColor: '#fff3bf',  // 밝은 노란 배경
-                scale: 1.08,
-                fontWeight: 'bold'
-            }
+            // 모든 색상 효과 제거 (대각선 애니메이션만 사용)
         },
 
         // 디버그 모드
@@ -231,7 +218,6 @@
 
         return new Promise((resolve) => {
             const { word, stagger, blink } = AnimationConfig.timing;
-            const { add, keep } = AnimationConfig.effects;
 
             // 전체 애니메이션 단어 수 계산
             const totalAnimatedWords = (diffData.added?.length || 0) + (diffData.kept?.length || 0) + (diffData.removed?.length || 0);
@@ -293,62 +279,19 @@
                         }
                     }, 0);
 
-                    // Phase 3: Blink 효과 (초록색으로 강조, 위→아래 순서)
-                    tl.to(addedWords, {
-                        backgroundColor: add.backgroundColor,
-                        color: add.color,
-                        duration: 0.15,
-                        ease: 'power1.inOut',
-                        yoyo: true,
-                        repeat: 1,  // 1회 깜빡임 (yoyo로 2번 실행)
-                        stagger: {
-                            amount: adjustedStaggerAmount * 0.2,
-                            from: 'start'  // 위→아래 순서
-                        }
-                    }, '-=0.2');
+                    // Phase 3: 초록색 Blink 효과 제거 (대각선 애니메이션만으로 충분)
                 }
             }
 
             // ============================================================
-            // 2. 유지되는 단어 애니메이션 (노란색 blink)
+            // 2. 사라지는 단어 애니메이션 (Fade Out)
             // ============================================================
-            if (diffData.kept && diffData.kept.length > 0) {
-                const keptIndices = diffData.kept.map(item => item.index);
-                const filteredIndices = filterAndSampleWords(keptIndices, allWords, samplingRate);
-                const keptWords = filteredIndices.map(i => allWords[i]).filter(Boolean);
-
-                console.log(`유지 단어 애니메이션: ${diffData.kept.length}개 → ${keptWords.length}개`);
-                console.log('kept 단어 샘플 (첫 10개):', keptWords.slice(0, 10).map(w => w.textContent.trim()));
-
-                if (keptWords.length > 0) {
-                    // 가벼운 Blink 효과 (노란색, 위→아래 순서)
-                    tl.to(keptWords, {
-                        color: keep.color,
-                        backgroundColor: keep.backgroundColor,
-                        scale: keep.scale,
-                        duration: blink.duration,
-                        ease: 'power1.inOut',
-                        repeat: 0,  // 1회만 (yoyo 없음)
-                        yoyo: true,
-                        stagger: {
-                            amount: adjustedStaggerAmount * 0.3,
-                            from: 'start'  // 위→아래 순서
-                        }
-                    }, 0.1);
-
-                    // 원래 상태로 복원 (위→아래 순서)
-                    tl.to(keptWords, {
-                        color: '',
-                        backgroundColor: '',
-                        scale: 1,
-                        duration: word.duration * 0.3,
-                        ease: word.ease,
-                        stagger: {
-                            amount: adjustedStaggerAmount * 0.2,
-                            from: 'start'  // 위→아래 순서
-                        }
-                    }, '+=0.1');
-                }
+            if (diffData.removed && diffData.removed.length > 0) {
+                const removedIndices = diffData.removed.map(item => item.index);
+                // removed는 fromLevel 텍스트 기준이므로, 현재 표시된 allWords가 아닌 이전 단어들을 참조
+                // 하지만 실제 DOM에는 toLevel 텍스트가 렌더링되므로, removed 애니메이션은 불가능
+                // 대신 레벨 전환 시점에 짧은 fade out을 전체 컨테이너에 적용
+                console.log(`사라지는 단어: ${diffData.removed.length}개 (fade out 적용)`);
             }
 
             // ============================================================

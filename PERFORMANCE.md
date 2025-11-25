@@ -8,7 +8,7 @@
 
 **다이나믹 대각선 진입 애니메이션** (animator.js)
 ```javascript
-// 추가된 단어: 대각선에서 날아오며 확대 + 초록색 깜빡임
+// 추가된 단어: 대각선에서 날아오며 확대
 addedWords.forEach((word) => {
     const dir = getRandomDiagonal();  // 200~250px 랜덤 거리
     gsap.set(word, {
@@ -30,6 +30,19 @@ tl.to(addedWords, {
     ease: 'back.out(2.0)',  // 강한 오버슈팅 효과
     stagger: { amount: adjustedStaggerAmount, from: 'start' }  // 위→아래
 });
+```
+
+**사라지는 단어 Fade Out** (app.js)
+```javascript
+// removed가 있을 때 짧은 fade out
+if (diffData.removed && diffData.removed.length > 0) {
+    await gsap.to(textContent, {
+        opacity: 0.3,
+        duration: 0.15,
+        ease: 'power1.out'
+    });
+}
+// 텍스트 교체 후 opacity 즉시 복원
 ```
 
 **성능 최적화 전략**:

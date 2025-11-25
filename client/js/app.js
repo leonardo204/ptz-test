@@ -449,8 +449,26 @@
             // Zoom In/Out 모두 동일: 텍스트 교체 → 단일 애니메이션 실행
             console.log(`${timeline.direction === 'out' ? 'Zoom Out' : 'Zoom In'}: 텍스트 교체 → 애니메이션`);
 
+            // Phase 0: 사라지는 단어에 짧은 fade out (removed가 있을 때만)
+            if (diffData.removed && diffData.removed.length > 0) {
+                console.log(`사라지는 단어 fade out: ${diffData.removed.length}개`);
+                await new Promise(resolve => {
+                    gsap.to(textContent, {
+                        opacity: 0.3,
+                        duration: 0.15,
+                        ease: 'power1.out',
+                        onComplete: resolve
+                    });
+                });
+            }
+
             // Phase 1: 새 텍스트로 교체
             displayText(toText, toLevel);
+
+            // Phase 1.5: fade in (removed가 있었다면)
+            if (diffData.removed && diffData.removed.length > 0) {
+                gsap.set(textContent, { opacity: 1 });
+            }
 
             // Phase 2: 애니메이션 실행 (새 toText 기준)
             // animator.js가 direction에 따라 자동으로 적절한 효과 적용
