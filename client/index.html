@@ -24,43 +24,17 @@
     <!-- 메인 컨테이너 -->
     <div class="app-container">
 
-        <!-- 헤더 -->
-        <header class="app-header">
-            <h1>📖 Pinch-to-Zoom 텍스트 요약</h1>
-            <p class="subtitle">핀치 제스처로 요약 수준을 조절하세요</p>
-        </header>
+        <!-- 거대한 레벨 인디케이터 (항상 표시) -->
+        <div class="level-display">
+            <div class="level-number" id="level-number">0</div>
+            <div class="level-label" id="level-label">ORIGINAL</div>
+        </div>
 
-        <!-- 컨트롤 패널 -->
+        <!-- 미니멀 컨트롤 (우측 세로) -->
         <div class="control-panel">
-            <!-- 레벨 인디케이터 -->
-            <div class="level-indicator">
-                <span class="level-label">현재 레벨:</span>
-                <span class="level-value" id="current-level">0</span>
-                <span class="level-description" id="level-description">원문</span>
-            </div>
-
-            <!-- 버튼 컨트롤 (데스크톱용) -->
-            <div class="button-controls">
-                <button class="control-button" id="zoom-out-btn" title="요약 레벨 증가">
-                    <span class="button-icon">📝</span>
-                    <span class="button-text">간단히</span>
-                </button>
-                <button class="control-button" id="zoom-in-btn" title="요약 레벨 감소">
-                    <span class="button-icon">📄</span>
-                    <span class="button-text">자세히</span>
-                </button>
-            </div>
-
-            <!-- 레벨 슬라이더 -->
-            <div class="level-slider">
-                <input type="range" id="level-range" min="0" max="3" value="0" step="1">
-                <div class="slider-labels">
-                    <span>원문</span>
-                    <span>Level 1</span>
-                    <span>Level 2</span>
-                    <span>Level 3</span>
-                </div>
-            </div>
+            <button class="level-btn level-btn-up" id="level-btn-up" aria-label="레벨 증가">+</button>
+            <input type="range" id="level-range" min="0" max="3" value="0" step="1" class="level-slider" orient="vertical">
+            <button class="level-btn level-btn-down" id="level-btn-down" aria-label="레벨 감소">−</button>
         </div>
 
         <!-- 텍스트 표시 영역 -->
@@ -70,59 +44,10 @@
             </div>
         </main>
 
-        <!-- 통계 정보 -->
-        <aside class="stats-panel" id="stats-panel">
-            <div class="stat-item">
-                <span class="stat-label">단어 수:</span>
-                <span class="stat-value" id="word-count">-</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">문장 수:</span>
-                <span class="stat-value" id="sentence-count">-</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">압축률:</span>
-                <span class="stat-value" id="compression-rate">-</span>
-            </div>
-        </aside>
-
-        <!-- 로딩 스피너 -->
+        <!-- 로딩 오버레이 (미니멀) -->
         <div class="loading-overlay" id="loading-overlay">
             <div class="spinner"></div>
-            <p class="loading-text" id="loading-text">요약을 생성하는 중...</p>
         </div>
-
-        <!-- 에러 메시지 -->
-        <div class="error-message" id="error-message">
-            <div class="error-content">
-                <span class="error-icon">⚠️</span>
-                <p class="error-text" id="error-text"></p>
-                <button class="error-close" id="error-close">닫기</button>
-            </div>
-        </div>
-
-        <!-- 성공 메시지 -->
-        <div class="success-message" id="success-message">
-            <div class="success-content">
-                <span class="success-icon">✓</span>
-                <p class="success-text" id="success-text"></p>
-            </div>
-        </div>
-
-        <!-- 터치 인디케이터 (모바일용) -->
-        <div class="touch-indicator" id="touch-indicator">
-            <p>핀치 제스처를 사용하세요</p>
-            <div class="gesture-hint">
-                <span class="finger-icon">👆</span>
-                <span class="gesture-arrow">↔️</span>
-                <span class="finger-icon">👆</span>
-            </div>
-        </div>
-
-        <!-- 푸터 -->
-        <footer class="app-footer">
-            <p>&copy; 2024 Pinch-to-Zoom Summarizer | Powered by Azure OpenAI</p>
-        </footer>
     </div>
 
     <!-- GSAP Library -->

@@ -260,24 +260,40 @@
      * @param {number} level - 현재 레벨
      */
     function updateLevelUI(level) {
-        const levelValueEl = document.getElementById('current-level');
-        const levelDescEl = document.getElementById('level-description');
+        const levelNumberEl = document.getElementById('level-number');
+        const levelLabelEl = document.getElementById('level-label');
         const rangeEl = document.getElementById('level-range');
 
-        if (levelValueEl) {
-            levelValueEl.textContent = level;
+        // 거대한 숫자 표시 - 심플 애니메이션
+        if (levelNumberEl) {
+            levelNumberEl.classList.add('level-changing');
+            levelNumberEl.textContent = level;
+
+            // 애니메이션 완료 후 클래스 제거
+            setTimeout(() => {
+                levelNumberEl.classList.remove('level-changing');
+            }, 400);
         }
 
-        if (levelDescEl) {
-            const descriptions = {
-                0: '원문',
-                1: 'Level 1 - 1차 요약',
-                2: 'Level 2 - 2차 요약',
-                3: 'Level 3 - 최종 요약'
+        // 레벨 레이블 (영문 대문자) - 연계 애니메이션
+        if (levelLabelEl) {
+            const labels = {
+                0: 'ORIGINAL',
+                1: 'SUMMARY I',
+                2: 'SUMMARY II',
+                3: 'SUMMARY III'
             };
-            levelDescEl.textContent = descriptions[level] || '';
+
+            // 레이블 애니메이션 추가
+            levelLabelEl.classList.add('level-label-changing');
+            levelLabelEl.textContent = labels[level] || '';
+
+            setTimeout(() => {
+                levelLabelEl.classList.remove('level-label-changing');
+            }, 400);
         }
 
+        // 슬라이더 업데이트
         if (rangeEl) {
             rangeEl.value = level;
         }

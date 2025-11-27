@@ -54,16 +54,16 @@
      * 데스크톱 버튼 제스처 초기화
      */
     function initButtonGestures() {
-        const zoomOutBtn = document.getElementById('zoom-out-btn');
-        const zoomInBtn = document.getElementById('zoom-in-btn');
+        const levelUpBtn = document.getElementById('level-btn-up');
+        const levelDownBtn = document.getElementById('level-btn-down');
 
-        if (!zoomOutBtn || !zoomInBtn) {
-            console.error('줌 버튼을 찾을 수 없습니다.');
+        if (!levelUpBtn || !levelDownBtn) {
+            console.warn('레벨 버튼을 찾을 수 없습니다. (+ / - 버튼)');
             return;
         }
 
-        // 축소 버튼 (레벨 증가: 0 → 3)
-        const handleZoomOut = () => {
+        // + 버튼 (레벨 증가: 0 → 3)
+        const handleLevelUp = () => {
             if (GestureState.buttonCooldown) {
                 return;
             }
@@ -77,8 +77,8 @@
             }
         };
 
-        // 확대 버튼 (레벨 감소: 3 → 0)
-        const handleZoomIn = () => {
+        // - 버튼 (레벨 감소: 3 → 0)
+        const handleLevelDown = () => {
             if (GestureState.buttonCooldown) {
                 return;
             }
@@ -93,14 +93,14 @@
         };
 
         // 이벤트 리스너 등록
-        zoomOutBtn.addEventListener('click', handleZoomOut);
-        zoomInBtn.addEventListener('click', handleZoomIn);
+        levelUpBtn.addEventListener('click', handleLevelUp);
+        levelDownBtn.addEventListener('click', handleLevelDown);
 
         // cleanup용 참조 저장
-        GestureState.handlers.zoomOut = handleZoomOut;
-        GestureState.handlers.zoomIn = handleZoomIn;
+        GestureState.handlers.levelUp = handleLevelUp;
+        GestureState.handlers.levelDown = handleLevelDown;
 
-        console.log('✓ 버튼 제스처 초기화 완료');
+        console.log('✓ 버튼 제스처 초기화 완료 (+ / -)');
     }
 
     /**
@@ -189,18 +189,18 @@
      * @param {number} level - 현재 레벨
      */
     function updateButtonStates(level) {
-        const zoomOutBtn = document.getElementById('zoom-out-btn');
-        const zoomInBtn = document.getElementById('zoom-in-btn');
+        const levelUpBtn = document.getElementById('level-btn-up');
+        const levelDownBtn = document.getElementById('level-btn-down');
 
-        if (!zoomOutBtn || !zoomInBtn) {
+        if (!levelUpBtn || !levelDownBtn) {
             return;
         }
 
-        // Level 3이면 축소 버튼 비활성화
-        zoomOutBtn.disabled = (level >= 3);
+        // Level 3이면 + 버튼 비활성화 (더 이상 증가 불가)
+        levelUpBtn.disabled = (level >= 3);
 
-        // Level 0이면 확대 버튼 비활성화
-        zoomInBtn.disabled = (level <= 0);
+        // Level 0이면 - 버튼 비활성화 (더 이상 감소 불가)
+        levelDownBtn.disabled = (level <= 0);
     }
 
     /**
@@ -539,17 +539,17 @@
      * 제스처 정리 (cleanup)
      */
     function cleanup() {
-        const zoomOutBtn = document.getElementById('zoom-out-btn');
-        const zoomInBtn = document.getElementById('zoom-in-btn');
+        const levelUpBtn = document.getElementById('level-btn-up');
+        const levelDownBtn = document.getElementById('level-btn-down');
         const slider = document.getElementById('level-range');
         const textContainer = document.getElementById('text-container');
 
         // 버튼 이벤트 제거
-        if (zoomOutBtn && GestureState.handlers.zoomOut) {
-            zoomOutBtn.removeEventListener('click', GestureState.handlers.zoomOut);
+        if (levelUpBtn && GestureState.handlers.levelUp) {
+            levelUpBtn.removeEventListener('click', GestureState.handlers.levelUp);
         }
-        if (zoomInBtn && GestureState.handlers.zoomIn) {
-            zoomInBtn.removeEventListener('click', GestureState.handlers.zoomIn);
+        if (levelDownBtn && GestureState.handlers.levelDown) {
+            levelDownBtn.removeEventListener('click', GestureState.handlers.levelDown);
         }
 
         // 슬라이더 이벤트 제거

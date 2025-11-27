@@ -1,200 +1,406 @@
 /**
- * 애니메이션 스타일시트
- * GPU 가속을 활용한 부드러운 단어 전환 애니메이션
+ * Editorial Mono - 애니메이션 시스템
+ * 단어 전환 애니메이션 극대화, mono tone 시각화
  */
 
 /* ============================================================
-   GPU 가속 설정
+   GPU 가속 기본 설정
    ============================================================ */
 
 .word-transition {
-    will-change: opacity, transform;
+    will-change: opacity, transform, color;
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-font-smoothing: subpixel-antialiased;
 }
 
 /* ============================================================
-   페이드아웃 애니메이션
+   사라지는 단어 (우선순위별 차별화)
+   mono tone 그라디언트: 검은색 → 회색 → 투명
+   + 흔들림, 축소, 회전 효과 추가
    ============================================================ */
 
-@keyframes fadeOut {
+/* 낮은 우선순위: 빠르게 회색으로 변하며 축소되며 사라짐 */
+@keyframes fadeOutLowPriority {
     0% {
         opacity: 1;
-        transform: translateZ(0) scale(1);
+        color: var(--black);
+        transform: scale(1) translateY(0);
+    }
+    20% {
+        transform: scale(0.95) translateY(-2px);
+    }
+    30% {
+        opacity: 0.7;
+        color: var(--gray-400);
+        transform: scale(0.9) translateY(0);
+    }
+    60% {
+        transform: scale(0.85) translateY(1px);
     }
     100% {
         opacity: 0;
-        transform: translateZ(0) scale(0.95);
+        color: var(--gray-200);
+        transform: scale(0.7) translateY(3px);
     }
 }
 
-.word-fadeout {
-    animation: fadeOut 300ms ease-out forwards;
-    will-change: opacity, transform;
-}
-
-/* ============================================================
-   페이드인 애니메이션
-   ============================================================ */
-
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-        transform: translateZ(0) scale(0.95);
-    }
-    100% {
-        opacity: 1;
-        transform: translateZ(0) scale(1);
-    }
-}
-
-.word-fadein {
-    animation: fadeIn 300ms ease-in forwards;
-    will-change: opacity, transform;
-}
-
-/* ============================================================
-   변형(Morph) 애니메이션
-   ============================================================ */
-
-@keyframes morph {
-    0% {
-        opacity: 1;
-        color: inherit;
-    }
-    50% {
-        opacity: 0.3;
-        color: #3498db;
-        transform: translateZ(0) scale(0.98);
-    }
-    100% {
-        opacity: 1;
-        color: inherit;
-        transform: translateZ(0) scale(1);
-    }
-}
-
-.word-morph {
-    animation: morph 400ms ease-in-out forwards;
+.word-fadeout-low {
+    animation: fadeOutLowPriority 300ms ease-out forwards;
     will-change: opacity, color, transform;
 }
 
-/* ============================================================
-   하이라이트 애니메이션
-   ============================================================ */
-
-@keyframes highlight {
-    0%, 100% {
-        background-color: transparent;
-    }
-    50% {
-        background-color: rgba(52, 152, 219, 0.2);
-    }
-}
-
-.word-highlight {
-    animation: highlight 600ms ease-in-out;
-    padding: 2px 4px;
-    border-radius: 3px;
-}
-
-/* ============================================================
-   우선순위 그룹별 지연 시간
-   ============================================================ */
-
-/* 즉시 제거 그룹 (우선순위 낮음) */
-.priority-immediate {
-    animation-delay: 0ms;
-}
-
-/* 중간 제거 그룹 */
-.priority-middle {
-    animation-delay: 100ms;
-}
-
-/* 후반 제거 그룹 (우선순위 높음) */
-.priority-late {
-    animation-delay: 200ms;
-}
-
-/* ============================================================
-   Ease 곡선 정의
-   ============================================================ */
-
-.ease-out-quad {
-    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.ease-in-quad {
-    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
-}
-
-.ease-in-out-quad {
-    animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
-}
-
-/* ============================================================
-   레벨 전환 애니메이션
-   ============================================================ */
-
-@keyframes levelTransition {
+/* 중간 우선순위: 좌우 흔들림과 함께 사라짐 */
+@keyframes fadeOutMedPriority {
     0% {
         opacity: 1;
-        transform: translateY(0);
+        color: var(--black);
+        transform: scale(1) translateX(0) rotate(0deg);
     }
-    50% {
-        opacity: 0.7;
-        transform: translateY(-5px);
+    25% {
+        transform: scale(0.96) translateX(-2px) rotate(-1deg);
     }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.level-transition {
-    animation: levelTransition 500ms ease-in-out;
-}
-
-/* ============================================================
-   텍스트 컨테이너 전환
-   ============================================================ */
-
-@keyframes containerFade {
-    0% {
+    40% {
         opacity: 0.8;
+        color: var(--gray-600);
+        transform: scale(0.92) translateX(2px) rotate(1deg);
+    }
+    65% {
+        transform: scale(0.88) translateX(-1px) rotate(-0.5deg);
+    }
+    100% {
+        opacity: 0;
+        color: var(--gray-300);
+        transform: scale(0.75) translateX(0) rotate(0deg);
+    }
+}
+
+.word-fadeout-med {
+    animation: fadeOutMedPriority 400ms ease-out forwards;
+    will-change: opacity, color, transform;
+}
+
+/* 높은 우선순위: 강한 흔들림과 회전으로 사라짐 */
+@keyframes fadeOutHighPriority {
+    0% {
+        opacity: 1;
+        color: var(--black);
+        transform: scale(1) translateX(0) rotate(0deg);
+        filter: blur(0px);
+    }
+    20% {
+        transform: scale(0.98) translateX(-3px) rotate(-2deg);
+    }
+    40% {
+        transform: scale(0.95) translateX(3px) rotate(2deg);
+    }
+    50% {
+        opacity: 0.9;
+        color: var(--gray-700);
+        filter: blur(0.5px);
+    }
+    70% {
+        transform: scale(0.9) translateX(-2px) rotate(-1deg);
+        filter: blur(1px);
+    }
+    100% {
+        opacity: 0;
+        color: var(--gray-400);
+        transform: scale(0.8) translateX(0) rotate(0deg);
+        filter: blur(2px);
+    }
+}
+
+.word-fadeout-high {
+    animation: fadeOutHighPriority 500ms ease-out forwards;
+    will-change: opacity, color, transform, filter;
+}
+
+/* ============================================================
+   나타나는 단어 (GSAP 대각선 진입 유지)
+   추가: 확대 + 색상 변화 + subtle glow 효과
+   ============================================================ */
+
+/* 기본 페이드인 (GSAP과 함께 사용) - 강화된 버전 */
+.word-fadein {
+    animation: emphasize 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes emphasize {
+    0% {
+        opacity: 0;
+        color: var(--gray-300);
+        transform: scale(0.8);
+        text-shadow: 0 0 0 transparent;
+    }
+    40% {
+        opacity: 0.6;
+        color: var(--gray-600);
+        transform: scale(1.1);
+    }
+    60% {
+        opacity: 1;
+        color: var(--black);
+        transform: scale(1.05);
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    }
+    80% {
+        color: var(--gray-800);
+        transform: scale(0.98);
+        text-shadow: 0 0 4px rgba(0, 0, 0, 0.05);
+    }
+    100% {
+        color: var(--black);
+        transform: scale(1);
+        text-shadow: 0 0 0 transparent;
+    }
+}
+
+/* 추가 강조 효과 - 중요한 단어용 */
+.word-fadein-strong {
+    animation: emphasizeStrong 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes emphasizeStrong {
+    0% {
+        opacity: 0;
+        color: var(--gray-200);
+        transform: scale(0.7) rotateZ(-3deg);
+        text-shadow: 0 0 0 transparent;
+    }
+    30% {
+        opacity: 0.4;
+        color: var(--gray-500);
+        transform: scale(1.15) rotateZ(2deg);
+    }
+    50% {
+        opacity: 0.8;
+        color: var(--gray-800);
+        transform: scale(1.08) rotateZ(-1deg);
+        text-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+    }
+    70% {
+        opacity: 1;
+        color: var(--black);
+        transform: scale(0.95) rotateZ(0.5deg);
+        text-shadow: 0 0 6px rgba(0, 0, 0, 0.08);
+    }
+    100% {
+        color: var(--black);
+        transform: scale(1) rotateZ(0deg);
+        text-shadow: 0 0 0 transparent;
+    }
+}
+
+/* ============================================================
+   레벨 숫자 전환 애니메이션 (심플 버전)
+   ============================================================ */
+
+/* 메인 레벨 변경 애니메이션 - 페이드 + subtle 스케일 */
+@keyframes levelChange {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.3;
+        transform: scale(1.05);
     }
     100% {
         opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.level-changing {
+    animation: levelChange 400ms ease-in-out;
+}
+
+/* 레벨 레이블 연계 애니메이션 */
+@keyframes labelPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.level-label-changing {
+    animation: labelPulse 400ms ease-in-out;
+}
+
+/* ============================================================
+   텍스트 컨테이너 전환 (강화된 버전)
+   ============================================================ */
+
+@keyframes containerPulse {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    30% {
+        opacity: 0.92;
+        transform: scale(0.998);
+    }
+    60% {
+        opacity: 0.96;
+        transform: scale(1.002);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
     }
 }
 
 .container-transition {
-    animation: containerFade 300ms ease-out;
+    animation: containerPulse 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 레벨 전환 시 컨테이너 전체 효과 */
+@keyframes containerLevelChange {
+    0% {
+        opacity: 1;
+        filter: brightness(1);
+    }
+    20% {
+        opacity: 0.9;
+        filter: brightness(0.98);
+    }
+    50% {
+        opacity: 0.95;
+        filter: brightness(0.99);
+    }
+    100% {
+        opacity: 1;
+        filter: brightness(1);
+    }
+}
+
+.container-level-transition {
+    animation: containerLevelChange 600ms ease-in-out;
 }
 
 /* ============================================================
-   순차적 애니메이션 (Stagger)
+   단어 하이라이트 (디버그/포커스용)
    ============================================================ */
 
-/* 그룹 내 단어별 20ms 간격 */
-.word-stagger-1 { animation-delay: 0ms; }
-.word-stagger-2 { animation-delay: 20ms; }
-.word-stagger-3 { animation-delay: 40ms; }
-.word-stagger-4 { animation-delay: 60ms; }
-.word-stagger-5 { animation-delay: 80ms; }
-.word-stagger-6 { animation-delay: 100ms; }
-.word-stagger-7 { animation-delay: 120ms; }
-.word-stagger-8 { animation-delay: 140ms; }
-.word-stagger-9 { animation-delay: 160ms; }
-.word-stagger-10 { animation-delay: 180ms; }
+@keyframes wordHighlight {
+    0%, 100% {
+        background-color: transparent;
+    }
+    50% {
+        background-color: var(--gray-100);
+    }
+}
+
+.word-highlight {
+    animation: wordHighlight 600ms ease-in-out;
+    padding: 2px 0;
+    border-radius: 2px;
+}
+
+/* ============================================================
+   우선순위 시각화 (디버그 모드)
+   단어 배경색으로 우선순위 표시
+   ============================================================ */
+
+.debug-mode .word[data-priority="low"] {
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.05) 50%);
+}
+
+.debug-mode .word[data-priority="medium"] {
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.08) 50%);
+}
+
+.debug-mode .word[data-priority="high"] {
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.12) 50%);
+}
+
+/* ============================================================
+   순차 애니메이션 (Stagger Effect)
+   GSAP과 함께 사용 가능
+   ============================================================ */
+
+.word-stagger {
+    opacity: 0;
+    animation: staggerFadeIn 300ms ease-out forwards;
+}
+
+@keyframes staggerFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================
+   로딩 애니메이션 (미니멀)
+   ============================================================ */
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner {
+    animation: spin 800ms linear infinite;
+}
+
+/* ============================================================
+   슬라이더 인터랙션 애니메이션 (강화)
+   ============================================================ */
+
+@keyframes thumbPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);
+    }
+    30% {
+        transform: scale(1.2);
+        box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.15);
+    }
+    60% {
+        transform: scale(1.15);
+        box-shadow: 0 0 0 8px rgba(0, 0, 0, 0.08);
+    }
+    100% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+}
+
+.level-slider:active::-webkit-slider-thumb {
+    animation: thumbPulse 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.level-slider:active::-moz-range-thumb {
+    animation: thumbPulse 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 슬라이더 값 변경 시 트랙 애니메이션 */
+@keyframes trackGlow {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.level-slider.changing {
+    animation: trackGlow 300ms ease-in-out;
+}
 
 /* ============================================================
    문단 전환 애니메이션
    ============================================================ */
 
-@keyframes paragraphSlide {
+@keyframes paragraphFade {
     0% {
         opacity: 0;
         transform: translateY(10px);
@@ -206,119 +412,176 @@
 }
 
 .paragraph-enter {
-    animation: paragraphSlide 400ms ease-out;
+    animation: paragraphFade 400ms ease-out;
 }
 
 /* ============================================================
-   로딩 애니메이션
+   글자 간격 조절 (읽기 모드 전환)
    ============================================================ */
 
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-        transform: scale(1);
+@keyframes letterSpacing {
+    0% {
+        letter-spacing: 0em;
     }
     50% {
-        opacity: 0.6;
-        transform: scale(0.95);
+        letter-spacing: 0.02em;
+    }
+    100% {
+        letter-spacing: 0em;
     }
 }
 
-.loading-pulse {
-    animation: pulse 1.5s ease-in-out infinite;
+.text-breathing {
+    animation: letterSpacing 2s ease-in-out infinite;
 }
 
 /* ============================================================
-   스켈레톤 로딩 애니메이션
+   단어 삭제 플래시 효과 (강화)
+   특허의 핵심: 단어가 사라짐을 명확히 표시
    ============================================================ */
 
-@keyframes skeleton {
-    0% {
-        background-position: -200px 0;
-    }
-    100% {
-        background-position: calc(200px + 100%) 0;
-    }
-}
-
-.skeleton-text {
-    display: inline-block;
-    height: 1em;
-    background: linear-gradient(
-        90deg,
-        #f0f0f0 0px,
-        #e0e0e0 40px,
-        #f0f0f0 80px
-    );
-    background-size: 200px 100%;
-    animation: skeleton 1.5s ease-in-out infinite;
-    border-radius: 4px;
-}
-
-/* ============================================================
-   버튼 애니메이션
-   ============================================================ */
-
-@keyframes buttonPress {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(0.95);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-.button-press {
-    animation: buttonPress 200ms ease-out;
-}
-
-/* ============================================================
-   토스트 메시지 애니메이션
-   ============================================================ */
-
-@keyframes toastSlideIn {
-    0% {
-        opacity: 0;
-        transform: translate(-50%, -20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translate(-50%, 0);
-    }
-}
-
-@keyframes toastSlideOut {
+@keyframes flashAndFade {
     0% {
         opacity: 1;
-        transform: translate(-50%, 0);
+        color: var(--black);
+        background-color: transparent;
+        transform: scale(1) translateY(0);
+    }
+    10% {
+        opacity: 1;
+        color: var(--black);
+        background-color: var(--gray-300);
+        transform: scale(1.05) translateY(-1px);
+    }
+    20% {
+        opacity: 1;
+        color: var(--black);
+        background-color: var(--gray-200);
+        transform: scale(1.08) translateY(-2px);
+    }
+    40% {
+        opacity: 0.8;
+        color: var(--gray-600);
+        background-color: var(--gray-100);
+        transform: scale(0.95) translateY(0);
+    }
+    70% {
+        opacity: 0.4;
+        color: var(--gray-400);
+        background-color: transparent;
+        transform: scale(0.85) translateY(2px);
     }
     100% {
         opacity: 0;
-        transform: translate(-50%, -20px);
+        color: var(--gray-200);
+        transform: scale(0.7) translateY(4px);
     }
 }
 
-.toast-enter {
-    animation: toastSlideIn 300ms ease-out;
+.word-flash-fade {
+    animation: flashAndFade 450ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    padding: 2px 3px;
+    border-radius: 2px;
 }
 
-.toast-exit {
-    animation: toastSlideOut 300ms ease-in;
+/* ============================================================
+   단어 추가 강조 효과 (강화)
+   특허의 핵심: 새로 추가된 단어 강조
+   ============================================================ */
+
+@keyframes slideAndEmphasize {
+    0% {
+        opacity: 0;
+        color: var(--gray-200);
+        transform: translateY(-5px) scale(0.85);
+        text-shadow: 0 0 0 transparent;
+    }
+    25% {
+        opacity: 0.4;
+        color: var(--gray-400);
+        transform: translateY(-2px) scale(0.95);
+    }
+    40% {
+        opacity: 0.7;
+        color: var(--gray-600);
+        transform: translateY(1px) scale(1.08);
+        text-shadow: 0 0 6px rgba(0, 0, 0, 0.08);
+    }
+    60% {
+        opacity: 0.9;
+        color: var(--gray-800);
+        transform: translateY(-1px) scale(1.05);
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.12);
+    }
+    80% {
+        opacity: 1;
+        color: var(--gray-900);
+        transform: translateY(0.5px) scale(0.98);
+        text-shadow: 0 0 4px rgba(0, 0, 0, 0.06);
+    }
+    100% {
+        opacity: 1;
+        color: var(--black);
+        transform: translateY(0) scale(1);
+        text-shadow: 0 0 0 transparent;
+    }
+}
+
+.word-slide-emphasize {
+    animation: slideAndEmphasize 600ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ============================================================
+   전체 텍스트 블러 효과 (전환 시작 시그널)
+   ============================================================ */
+
+@keyframes textBlur {
+    0% {
+        filter: blur(0px);
+        opacity: 1;
+    }
+    50% {
+        filter: blur(2px);
+        opacity: 0.8;
+    }
+    100% {
+        filter: blur(0px);
+        opacity: 1;
+    }
+}
+
+.text-blur-transition {
+    animation: textBlur 600ms ease-in-out;
 }
 
 /* ============================================================
    성능 최적화
    ============================================================ */
 
-/* 애니메이션이 끝난 후 will-change 제거 */
+/* 애니메이션 완료 후 will-change 제거 */
 .animation-complete {
     will-change: auto;
 }
 
-/* 애니메이션 중단 (성능 저하 시) */
+/* 저성능 디바이스 최적화 */
+@media (max-width: 767px) and (max-resolution: 1dppx) {
+    .word-fadeout-low,
+    .word-fadeout-med,
+    .word-fadeout-high {
+        animation-duration: 200ms;
+    }
+
+    .word-fadein,
+    .word-slide-emphasize {
+        animation-duration: 300ms;
+    }
+
+    .word-transition {
+        will-change: opacity;
+    }
+}
+
+/* 모션 감소 설정 준수 */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -329,35 +592,80 @@
     }
 }
 
-/* 저성능 디바이스 감지 (간접적) */
-@media (max-width: 767px) and (max-resolution: 1dppx) {
-    .word-transition {
-        will-change: opacity;
-    }
-
-    .word-fadeout,
-    .word-fadein {
-        animation-duration: 200ms;
-    }
-}
-
 /* ============================================================
-   디버그 모드 (개발용)
+   다크 모드 애니메이션 조정
    ============================================================ */
 
-.debug-animation {
-    outline: 2px dashed red;
-    animation-duration: 3s !important;
-}
+@media (prefers-color-scheme: dark) {
+    /* 사라지는 단어 - 다크모드 */
+    @keyframes fadeOutLowPriority {
+        0% {
+            opacity: 1;
+            color: var(--white);
+            transform: scale(1) translateY(0);
+        }
+        20% {
+            transform: scale(0.95) translateY(-2px);
+        }
+        30% {
+            opacity: 0.7;
+            color: var(--gray-400);
+            transform: scale(0.9) translateY(0);
+        }
+        60% {
+            transform: scale(0.85) translateY(1px);
+        }
+        100% {
+            opacity: 0;
+            color: var(--gray-200);
+            transform: scale(0.7) translateY(3px);
+        }
+    }
 
-.debug-priority-immediate {
-    background-color: rgba(255, 0, 0, 0.1);
-}
+    /* 나타나는 단어 - 다크모드 */
+    @keyframes emphasize {
+        0% {
+            opacity: 0;
+            color: var(--gray-300);
+            transform: scale(0.8);
+            text-shadow: 0 0 0 transparent;
+        }
+        40% {
+            opacity: 0.6;
+            color: var(--gray-600);
+            transform: scale(1.1);
+        }
+        60% {
+            opacity: 1;
+            color: var(--white);
+            transform: scale(1.05);
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+        }
+        80% {
+            color: var(--gray-900);
+            transform: scale(0.98);
+            text-shadow: 0 0 4px rgba(255, 255, 255, 0.05);
+        }
+        100% {
+            color: var(--white);
+            transform: scale(1);
+            text-shadow: 0 0 0 transparent;
+        }
+    }
 
-.debug-priority-middle {
-    background-color: rgba(255, 165, 0, 0.1);
-}
-
-.debug-priority-late {
-    background-color: rgba(0, 255, 0, 0.1);
+    /* 레벨 변경 - 다크모드 (심플 버전) */
+    @keyframes levelChange {
+        0% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.3;
+            transform: scale(1.05);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
 }

@@ -437,15 +437,7 @@
                 throw new Error('타임라인 생성 실패');
             }
 
-            // 레벨 간격이 큰 경우: 텍스트 직접 교체
-            if (Math.abs(toLevel - fromLevel) > 1) {
-                console.log('애니메이션 없이 텍스트 교체 (레벨 간격 > 1)');
-                displayText(toText, toLevel);
-                updateStatistics(toLevel);
-                return;
-            }
-
-            // 통일된 애니메이션 플로우
+            // 통일된 애니메이션 플로우 (레벨 간격과 관계없이 애니메이션 실행)
             // Zoom In/Out 모두 동일: 텍스트 교체 → 단일 애니메이션 실행
             console.log(`${timeline.direction === 'out' ? 'Zoom Out' : 'Zoom In'}: 텍스트 교체 → 애니메이션`);
 

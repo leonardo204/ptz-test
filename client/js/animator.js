@@ -206,14 +206,26 @@
         const { diffData, direction } = timeline;
         const allWords = container.querySelectorAll('.word');
 
-        // 샘플링 비율 결정 (대량 전환이면 50%, 아니면 100%)
+        // 샘플링 비율 결정
         const { performance } = AnimationConfig;
-        const samplingRate = isLargeTransition(diffData)
-            ? performance.samplingRates.large
-            : performance.samplingRates.normal;
+        const isZoomOut = direction === 'out';  // 요약 방향 (레벨 증가)
 
-        if (samplingRate < 1.0) {
-            console.log(`대량 전환 감지: ${(samplingRate * 100)}% 샘플링 애니메이션`);
+        // 요약 방향(0→1)에서는 kept 단어도 애니메이션하므로 샘플링 조정
+        let addedSamplingRate = 1.0;
+        let keptSamplingRate = 0.0;  // 기본적으로 kept는 애니메이션 안함
+
+        if (isLargeTransition(diffData)) {
+            if (isZoomOut) {
+                // 요약 방향: kept도 애니메이션 (70% 샘플링)
+                addedSamplingRate = 1.0;  // added는 모두
+                keptSamplingRate = 0.7;   // kept의 70%
+                console.log(`요약 방향 대량 전환: added 100%, kept 70% 샘플링`);
+            } else {
+                // 원문 방향: added만 샘플링
+                addedSamplingRate = performance.samplingRates.large;  // 50%
+                keptSamplingRate = 0.0;
+                console.log(`원문 방향 대량 전환: added ${(addedSamplingRate * 100)}% 샘플링`);
+            }
         }
 
         return new Promise((resolve) => {
@@ -245,7 +257,7 @@
             // ============================================================
             if (diffData.added && diffData.added.length > 0) {
                 const addedIndices = diffData.added.map(item => item.index);
-                const filteredIndices = filterAndSampleWords(addedIndices, allWords, samplingRate);
+                const filteredIndices = filterAndSampleWords(addedIndices, allWords, addedSamplingRate);
                 const addedWords = filteredIndices.map(i => allWords[i]).filter(Boolean);
 
                 console.log(`추가 단어 애니메이션: ${diffData.added.length}개 → ${addedWords.length}개`);
@@ -280,6 +292,37 @@
                     }, 0);
 
                     // Phase 3: 초록색 Blink 효과 제거 (대각선 애니메이션만으로 충분)
+                }
+            }
+
+            // ============================================================
+            // 1-1. 유지되는 단어 애니메이션 (요약 방향일 때만)
+            // 요약 방향에서 더 많은 단어가 애니메이션되도록 kept에도 효과 추가
+            // ============================================================
+            if (isZoomOut && diffData.kept && diffData.kept.length > 0 && keptSamplingRate > 0) {
+                const keptIndices = diffData.kept.map(item => item.index);
+                const filteredIndices = filterAndSampleWords(keptIndices, allWords, keptSamplingRate);
+                const keptWords = filteredIndices.map(i => allWords[i]).filter(Boolean);
+
+                console.log(`유지 단어 애니메이션 (요약 방향): ${diffData.kept.length}개 → ${keptWords.length}개`);
+
+                if (keptWords.length > 0) {
+                    // Subtle pulse 효과 (덜 dramatic하게)
+                    tl.fromTo(keptWords, {
+                        scale: 1,
+                        opacity: 1
+                    }, {
+                        scale: 1.03,  // 아주 subtle한 확대
+                        opacity: 0.85,
+                        duration: 0.2,
+                        ease: 'power1.inOut',
+                        stagger: {
+                            amount: adjustedStaggerAmount * 0.5,
+                            from: 'start'
+                        },
+                        yoyo: true,  // 되돌아오기
+                        repeat: 1    // 1회 반복 (총 2번 실행)
+                    }, 0);
                 }
             }
 
